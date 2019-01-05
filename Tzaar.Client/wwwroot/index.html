@@ -1,0 +1,72 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width">
+   <title>Tzaar</title>
+    <base href="/" />
+    <!--<link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />-->
+    <link href="css/site.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            
+            <header>
+                <a class="logo" href="./">TZAAR</a>
+                <input id="nav" type="checkbox">
+                <label for="nav"></label>
+
+                <nav>
+                    <ul>
+                        <li><a href="http://www.gipf.com/tzaar/rules/rules.html" target="_blank">Rules</a></li>
+                        <li><a href="https://github.com/paularundel/tzaar"  target="_blank">Github</a></li>
+                        <li><a href="mailto: paularundel@gmail.com">Contact</a></li>
+                    </ul>
+                </nav>
+
+            </header>
+
+        </div>
+        <div class="main" id="game_div"><app><br /><br /><p><div class="lds-ripple"><div></div><div></div></div></p></app></div>
+    </div>
+
+    <script src="_framework/blazor.webassembly.js"></script>
+    <audio id="sound_select" src="select.wav"></audio>
+    <audio id="sound_move" src="move.wav"></audio>
+    <audio id="sound_invalid" src="invalid.wav"></audio>
+    <script>
+        window.playSound = (sound) => {
+            document.getElementById(sound).play();
+        };
+
+        window.JsInteropWindow = {
+
+            initialize: () => {
+
+                gamediv = document.getElementById("game_div");
+                DotNet.invokeMethodAsync(
+                    'Tzaar.Client'
+                    , 'WindowInitialized'
+                    , gamediv.clientWidth
+                    , gamediv.clientHeight
+                );
+
+                return true;
+            }
+        };
+
+        window.onresize = () => {
+
+            gamediv = document.getElementById("game_div");
+            DotNet.invokeMethodAsync(
+                'Tzaar.Client'
+                , 'UpdateWindowSize'
+                , gamediv.clientWidth
+                , gamediv.clientHeight
+            );
+        };
+
+    </script>
+</body>
+</html>

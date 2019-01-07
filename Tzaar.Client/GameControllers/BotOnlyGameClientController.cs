@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Tzaar.Shared;
+using Tzaar.Shared.AI;
 
 namespace Tzaar.Client.GameControllers
 {
@@ -11,7 +12,7 @@ namespace Tzaar.Client.GameControllers
         public override void StartGame()
         {
             Game = new Game();
-            var players = Game.StartGame("", "", true, true);
+            Game.StartGame(new AlwaysStackBot(), new RandomStackBot());
             NextAction();
             ClientPlayer = ClientPlayerType.None;
         }

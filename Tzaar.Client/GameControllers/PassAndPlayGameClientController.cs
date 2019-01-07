@@ -11,7 +11,7 @@ namespace Tzaar.Client.GameControllers
         public override void StartGame()
         {
             Game = new Game();
-            Players players = Game.StartGame("", "", false, false);
+            Game.StartGame(new Player(), new Player());
             ClientPlayer= ClientPlayerType.Both;
         }
 

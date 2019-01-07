@@ -19,8 +19,6 @@ namespace Tzaar.Server.Hubs
         public override async Task OnConnectedAsync()
         {
             await this.Clients.All.SendAsync("ClientLog", $"Player joined");
-
-            Players players = null;
             Game game = null;
 
             lock (LockObj)
@@ -37,18 +35,18 @@ namespace Tzaar.Server.Hubs
                     _games.Add(game.GameId,game);
                     Groups.AddToGroupAsync(_waitingPlayer, game.GameId);
                     Groups.AddToGroupAsync(Context.ConnectionId, game.GameId);
-
-                    players = game.StartGame(_waitingPlayer, Context.ConnectionId, false, false);
+                    Player pl1 = new Player() { Id = _waitingPlayer };
+                    Player pl2 = new Player() { Id = Context.ConnectionId };
+                    game.StartGame(pl1,pl2);
                     _waitingPlayer = String.Empty;
                 }
             }
 
-            if(players != null)
+            if(game != null)
             {
-                await Clients.Client(players.White.Id).SendAsync("SetPlayer", JsonConvert.SerializeObject(players.White));
-                await Clients.Client(players.Black.Id).SendAsync("SetPlayer", JsonConvert.SerializeObject(players.Black));
+                await Clients.Client(game.PlayerWhite.Id).SendAsync("SetPlayer", JsonConvert.SerializeObject(game.PlayerWhite));
+                await Clients.Client(game.PlayerBlack.Id).SendAsync("SetPlayer", JsonConvert.SerializeObject(game.PlayerBlack));
                 await Clients.Groups(game.GameId).SendAsync("RefreshGame", SerializeGame(game));
-                
             }
         }
 

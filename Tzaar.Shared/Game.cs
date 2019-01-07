@@ -33,23 +33,23 @@ namespace Tzaar.Shared
 
         private Random Rng = new Random();
 
-        public Players StartGame(string id1, string id2, bool isBot1, bool isBot2)
+        public void StartGame(Player pl1, Player pl2)
         {
-            Players players = new Players();
             //player 1 white
-            if(Rng.Next(2) == 0)
+            if (Rng.Next(2) == 0)
             {
-                players.White = CreatePlayer(id1, isBot1, PlayerColor.White);
-                players.Black = CreatePlayer(id2, isBot2, PlayerColor.Black);
+                pl1.Color = PlayerColor.White;
+                pl2.Color = PlayerColor.Black;
+                PlayerWhite = pl1;
+                PlayerBlack = pl2;
             }
             else
             {
-                players.White = CreatePlayer(id2, isBot2, PlayerColor.White);
-                players.Black = CreatePlayer(id1, isBot1, PlayerColor.Black);
+                pl1.Color = PlayerColor.Black;
+                pl2.Color = PlayerColor.White;
+                PlayerWhite = pl2;
+                PlayerBlack = pl1;
             }
-
-            PlayerWhite = players.White;
-            PlayerBlack = players.Black;
 
             Board = new Board();
             Board.InitBoard();
@@ -58,18 +58,6 @@ namespace Tzaar.Shared
             DecisionNumber = 1;
             TurnStage = TurnStage.Capture;
             Updated = DateTime.Now;
-
-            return players;
-        }
-
-        private Player CreatePlayer(string id, bool isBot, PlayerColor color)
-        {
-            if(isBot)
-            {
-                return new Bot2() { Color = color, Id = id, IsBot =isBot };
-            }
-
-            return new Player() { Color = color, Id = id, IsBot = isBot };
         }
 
         public bool IsPieceSelected { get { return SelectedNode != null; } }
@@ -331,18 +319,12 @@ namespace Tzaar.Shared
     {
         public string Id { get; set; }
         public PlayerColor Color { get; set; } 
-        public bool IsBot { get; set; }
+        public bool IsBot { get { return this is IBot; } }
 
         public override string ToString()
         {
             return $"Player {Color}";
         }
-    }
-
-    public class Players
-    {
-        public Player White { get; set; }
-        public Player Black { get; set; }
     }
 
     public enum PlayerColor

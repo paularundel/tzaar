@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Tzaar.Shared.AI
 {
-    public class Bot2 : Player, IBot 
+    public class RandomStackBot : Player, IBot 
     {
         Random Rng = new Random();
         bool _willPass = false;

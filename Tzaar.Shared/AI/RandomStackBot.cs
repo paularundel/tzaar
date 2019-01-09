@@ -34,22 +34,17 @@ namespace Tzaar.Shared.AI
             //todo random is slow
             if (game.TurnStage == TurnStage.CaptureStackOrPass && Rng.Next(2) == 0 && stackable.Count() > 0)
             {
-                Console.WriteLine($"BOT: stacking");
                 _selection = stackable.ElementAt(Rng.Next(stackable.Count()));
             }
             else if(captures.Count() < 1 && game.TurnStage == TurnStage.CaptureStackOrPass)
             {
-                 Console.WriteLine($"BOT: passing");
                 _willPass = true;
             }
             else
             {
-                Console.WriteLine($"BOT: capturing");
                 _selection = captures.ElementAt(Rng.Next(captures.Count()));
             }
             
-            Console.WriteLine($"BOT: selected {_selection.Select.Id}");
-            Console.WriteLine($"BOT: target {_selection.Target.Id}");
             return game.SelectPiece(_selection.Select);
         }
 

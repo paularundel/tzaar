@@ -17,6 +17,7 @@ namespace Tzaar.Shared
         //Game state
         public Player CurrentPlayer { get; set; }
         public Player WinningPlayer { get; set; }
+        public string WinCondition { get; set; }
         public int TurnNo { get; set; }
         public int DecisionNumber { get; set; }
         public TurnStage TurnStage { get; set; }
@@ -75,8 +76,6 @@ namespace Tzaar.Shared
         
         public bool SelectPiece(Node n)
         {
-            Console.WriteLine("SelectPiece");
-
             if(!n.IsVacant && n.TopPiece.PieceColor == CurrentPlayer.Color)
             {
                 SelectedNode = n;
@@ -106,7 +105,6 @@ namespace Tzaar.Shared
             if (target == SelectedNode)
             {
                 SelectedNode = null;
-                Console.WriteLine("Deselect");
                 return true;
             }
 
@@ -156,7 +154,7 @@ namespace Tzaar.Shared
             //current player cannot capture
             if(!CanCapture(CurrentPlayer) && TurnStage == TurnStage.Capture)
             {
-                Console.WriteLine($"{CurrentPlayer.Color} cannot capture");
+                WinCondition = $"{CurrentPlayer.Color} cannot capture";
                 WinningPlayer = CurrentPlayer.Color == PlayerColor.White ? PlayerBlack : PlayerWhite;
                 return;
             }
@@ -164,13 +162,13 @@ namespace Tzaar.Shared
             //players run out of types
             if (!HasAllTypes(PlayerWhite))
             {
-                Console.WriteLine($"White does not have all types");
+                WinCondition = "White does not have all types";
                 WinningPlayer = PlayerBlack;
             }
 
             if(!HasAllTypes(PlayerBlack))
             {
-                Console.WriteLine($"Black does not have all types");
+                WinCondition = "Black does not have all types";
                 WinningPlayer = PlayerWhite;
             }
 
@@ -200,7 +198,6 @@ namespace Tzaar.Shared
 
         private bool StackPiece(Node target)
         {
-            Console.WriteLine("StackPiece");
             //valid stack
             if (target.TopPiece.PieceColor == CurrentPlayer.Color &&
                 IsValidMove(SelectedNode, target))
@@ -217,7 +214,6 @@ namespace Tzaar.Shared
 
         private bool CapturePiece(Node target)
         {
-            Console.WriteLine("CapturePiece");
             //valid capture
             if(target.TopPiece.PieceColor != CurrentPlayer.Color &&
                 IsValidMove(SelectedNode, target) &&
@@ -293,7 +289,7 @@ namespace Tzaar.Shared
         {
             if (WinningPlayer != null)
             {
-                return "";
+                return WinCondition;
             }
 
             if (TurnStage == TurnStage.CaptureStackOrPass)

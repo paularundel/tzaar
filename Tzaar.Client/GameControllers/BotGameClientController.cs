@@ -11,12 +11,12 @@ namespace Tzaar.Client.GameControllers
 {
     public class BotGameClientController : GameClientController
     {
-        private static int BotDelay = 1;
+        private static int BotDelay = 10;
 
         public override void StartGame()
         {
             Game = new Game();
-            Game.StartGame(new Player(), new AlwaysStackBot());
+            Game.StartGame(new Player(), new SFBot());
 
             if(Game.PlayerWhite.IsBot)
             {

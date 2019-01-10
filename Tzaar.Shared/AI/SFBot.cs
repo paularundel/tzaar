@@ -32,18 +32,19 @@ namespace Tzaar.Shared.AI
             Board.Shuffle(captures);
             
             //TODO can win with two captures
+
             if (game.TurnStage == TurnStage.Capture)
             {
-                //get the least common opponent type
-                SelectForCapture(captures);
-                //to selection should be random from the least common type?
+                //capture the least common opponent type
+                SelectLeastCommonOpponentTypeForCapture(captures);
+                
             }
             else if (game.TurnStage == TurnStage.CaptureStackOrPass)
             {
                 //first see if a capture will win the game
                 SelectForWinningCapture(captures);
 
-                //otherwise always stack
+                //otherwise always try to stack
                 if (_selection == null)
                 {
                     //get list of stackable nodes
@@ -58,7 +59,8 @@ namespace Tzaar.Shared.AI
                     var botMaxHeight = botNodes.OrderByDescending(n => n.StackHeight).FirstOrDefault().StackHeight;
                     var oppMaxHeight = opposingNodes.OrderByDescending(n => n.StackHeight).FirstOrDefault().StackHeight;
 
-                    PieceType stackType = botMaxHeight > oppMaxHeight + 2 ? PieceType.Tzaaras : PieceType.Tzaars;
+                    //Stack tzaars unless already have strong stack
+                    PieceType stackType = botMaxHeight >= oppMaxHeight + 2 ? PieceType.Tzaaras : PieceType.Tzaars;
 
                     //piece type we have the most of
                     var typeCounts = botNodes.GroupBy(n => n.TopPiece.Type)
@@ -67,18 +69,19 @@ namespace Tzaar.Shared.AI
                     PieceType mostPieceType = typeCounts.ElementAt(0).Key;
                     PieceType secondMostPieceType = typeCounts.ElementAt(1).Key;
 
-                    SelectForStack(stackable, mostPieceType, stackType);
+                    //stack our preferred type on most or second most type
+                    SelectForStack(stackable, mostPieceType, secondMostPieceType, stackType);
 
-                    //bigstack cannot stack on most
+                    //can't stack that type, try other
                     if (_selection is null)
                     {
-                        SelectForStack(stackable, secondMostPieceType, stackType == PieceType.Tzaars ? PieceType.Tzaaras : PieceType.Tzaars);
+                        SelectForStack(stackable, mostPieceType, secondMostPieceType, stackType == PieceType.Tzaars ? PieceType.Tzaaras : PieceType.Tzaars);
                     }
 
                     //if still no option capture
                     if (_selection is null && captures.Count() > 0)
                     {
-                        SelectForCapture(captures);
+                        SelectLeastCommonOpponentTypeForCapture(captures);
                     }
 
                     //if can't capture
@@ -93,12 +96,13 @@ namespace Tzaar.Shared.AI
             return game.SelectPiece(_selection.Select);
         }
 
-        private void SelectForCapture(IEnumerable<NodePair> captures)
+        private void SelectLeastCommonOpponentTypeForCapture(IEnumerable<NodePair> captures)
         {
             var leastType = captures.GroupBy(np => np.Target.TopPiece.Type)
                                                 .OrderBy(grp => grp.Count())
                                                 .FirstOrDefault();
             _selection = leastType.ElementAt(Rng.Next(leastType.Count()));
+
         }
 
         private void SelectForWinningCapture(IEnumerable<NodePair> captures)
@@ -113,7 +117,7 @@ namespace Tzaar.Shared.AI
             }
         }
 
-        private void SelectForStack(IEnumerable<NodePair> stackable, PieceType mostPieceType, PieceType stackType)
+        private void SelectForStack(IEnumerable<NodePair> stackable, PieceType mostPieceType, PieceType secondMostPieceType, PieceType stackType)
         {
             //get tallest stack for this type
             var bigStack = stackable.Where(s => s.Select.TopPiece.Type == stackType)
@@ -130,6 +134,13 @@ namespace Tzaar.Shared.AI
             //can stack on most pieces type
             _selection = stackable.Where(s => s.Select == bigStack.Select && s.Target.TopPiece.Type == mostPieceType)
                                                     .FirstOrDefault();
+
+            //stack on second most piece type
+            if(_selection == null)
+            {
+                _selection = stackable.Where(s => s.Select == bigStack.Select && s.Target.TopPiece.Type == secondMostPieceType)
+                                                    .FirstOrDefault();
+            }
         }
 
         public bool Move(Game game)

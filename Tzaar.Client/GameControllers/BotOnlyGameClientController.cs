@@ -12,7 +12,7 @@ namespace Tzaar.Client.GameControllers
         public override void StartGame()
         {
             Game = new Game();
-            Game.StartGame(new AlwaysStackBot(), new RandomStackBot());
+            Game.StartGame(new AlwaysStackBot(), new SFBot());
             NextAction();
             ClientPlayer = ClientPlayerType.None;
         }

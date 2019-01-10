@@ -359,7 +359,6 @@ namespace Tzaar.Client.Pages
             var y1 = y + 4;
 
             builder.OpenElement(ct++, "text");
-            builder.AddAttribute(ct++, "name", id);
             builder.AddAttribute(ct++, "x", x1);
             builder.AddAttribute(ct++, "y", y1);
 
@@ -434,7 +433,6 @@ namespace Tzaar.Client.Pages
         private void DrawPieceSelected(RenderTreeBuilder builder, double x, double y, ref int ct, string id, string cl)
         {
             builder.OpenElement(ct++, "rect");
-            builder.AddAttribute(ct++, "name", id);
             builder.AddAttribute(ct++, "x", x - _vertexLength / 2);
             builder.AddAttribute(ct++, "y", y - _vertexLength / 2);
             builder.AddAttribute(ct++, "width", _vertexLength);

@@ -377,7 +377,7 @@ namespace Tzaar.Client.Pages
             PieceColor color = GetPieceColor(p.PieceColor);
             DrawPieceBase(builder, x, y, ref ct, color, id);
 
-            if (p.Type == PieceType.Tzaaras)
+            if (p.Type == PieceType.Tzaars)
             {
                 DrawPieceRing(builder, x, y, ref ct, color, id);
             }
@@ -425,7 +425,7 @@ namespace Tzaar.Client.Pages
             builder.AddAttribute(ct++, "r", _vertexLength * .3);
             builder.AddAttribute(ct++, "fill", color.Base);
             builder.AddAttribute(ct++, "stroke", color.Ring);
-            builder.AddAttribute(ct++, "stroke-width", 3);
+            builder.AddAttribute(ct++, "stroke-width", 2);
             builder.CloseElement();
         }
 

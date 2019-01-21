@@ -11,7 +11,7 @@ namespace Tzaar.Client.GameControllers
 {
     public class BotGameClientController : GameClientController
     {
-        private static int BotDelay = 10;
+        private static int BotDelay = 100;
 
         public override void StartGame()
         {

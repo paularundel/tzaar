@@ -4,7 +4,7 @@ Implementation of the board game Tzaar with Blazor and SignalR.
 
 Game modes:
 
-- Vs Bot (makes simple random plays for now)
+- vs Bot
 - Pass and Play
 - Online
 
